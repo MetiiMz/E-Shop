@@ -87,3 +87,13 @@ class UserRegisterForm(forms.Form):
         if user:
             raise ValidationError('This phone number already exists!')
         return phone_number
+
+
+class UserRegisterVerifyCodeForm(forms.Form):
+    code = forms.IntegerField(
+        label=False,
+        widget=forms.NumberInput({
+            'class': 'form-control',
+            'placeholder': 'Your Code',
+        })
+    )
