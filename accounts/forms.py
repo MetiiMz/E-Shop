@@ -97,3 +97,20 @@ class UserRegisterVerifyCodeForm(forms.Form):
             'placeholder': 'Your Code',
         })
     )
+
+
+class UserLoginForm(forms.Form):
+    email = forms.EmailField(
+        label=False,
+        widget=forms.EmailInput({
+            'class': 'form-control',
+            'placeholder': 'Email',
+        })
+    )
+    password = forms.CharField(
+        label=False,
+        widget=forms.PasswordInput({
+            'class': 'form-control',
+            'placeholder': 'Password',
+        })
+    )

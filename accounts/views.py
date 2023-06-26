@@ -1,10 +1,11 @@
 import random
 import pytz
 from datetime import datetime, timedelta
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from utils import otp_code
-from .forms import UserRegisterForm, UserRegisterVerifyCodeForm
+from .forms import UserRegisterForm, UserRegisterVerifyCodeForm, UserLoginForm
 from .models import User, OtpCode
 
 
@@ -61,5 +62,31 @@ class UserRegisterVerifyCodeView(View):
             else:
                 code_instance.delete()
                 return redirect('accounts:user_register')
-        else:
-            return render(request, self.template_name, {'form': form})
+        return render(request, self.template_name, {'form': form})
+
+
+class UserLoginView(View):
+    form_class = UserLoginForm
+    template_name = 'accounts/login.html'
+
+    def get(self, request):
+        form = self.form_class
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            user = authenticate(email=cd['email'], password=cd['password'])
+            if user is not None:
+                login(request, user)
+                return redirect('home:home')
+            else:
+                return redirect('accounts:user_login')
+        return render(request, self.template_name, {'form': form})
+
+
+class UserLogoutView(View):
+    def get(self, request):
+        logout(request)
+        return redirect('home:home')
