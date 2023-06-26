@@ -3,6 +3,10 @@ from django.contrib.auth.models import BaseUserManager
 
 class UserManager(BaseUserManager):
     def create_user(self, email, full_name, phone_number, password):
+        """
+        Creates and saves a User with the given email, fullname of phone number and password.
+        """
+
         if not email:
             raise ValueError('The user must have a email')
 
@@ -22,6 +26,10 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, full_name, phone_number, password):
+        """
+        Creates and saves a Super User with the given email, fullname of phone number and password.
+        """
+
         user = self.create_user(email, full_name, phone_number, password)
         user.is_admin = True
         user.is_superuser = True

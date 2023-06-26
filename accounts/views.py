@@ -18,8 +18,8 @@ class UserRegisterView(View):
         form = self.form_class(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
-            random_code = random.randint(1000, 9999)
-            otp_code(cd['phone_number'], random_code)
+            random_code = random.randint(1000, 9999)  # Generate random code
+            otp_code(cd['phone_number'], random_code)  # Send random code
             OtpCode.objects.create(phone_number=cd['phone_number'], code=random_code)
             request.session['user_register_info'] = {
                 'full_name': cd['full_name'],
