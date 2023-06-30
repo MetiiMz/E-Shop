@@ -2,6 +2,7 @@ import random
 import pytz
 from datetime import datetime, timedelta
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from utils import otp_code
@@ -12,6 +13,11 @@ from .models import User, OtpCode
 class UserRegisterView(View):
     form_class = UserRegisterForm
     template_name = 'accounts/register.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('home:home')
+        return super().dispatch(request, *args, **kwargs)
 
     def get(self, request):
         form = self.form_class
@@ -37,6 +43,11 @@ class UserRegisterView(View):
 class UserRegisterVerifyCodeView(View):
     form_class = UserRegisterVerifyCodeForm
     template_name = 'accounts/verify_code.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('home:home')
+        return super().dispatch(request, *args, **kwargs)
 
     def get(self, request):
         form = self.form_class
@@ -69,6 +80,15 @@ class UserLoginView(View):
     form_class = UserLoginForm
     template_name = 'accounts/login.html'
 
+    def setup(self, request, *args, **kwargs):
+        self.next = request.GET.get('next')
+        return super().setup(request, *args, **kwargs)
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('home:home')
+        return super().dispatch(request, *args, **kwargs)
+
     def get(self, request):
         form = self.form_class
         return render(request, self.template_name, {'form': form})
@@ -80,13 +100,15 @@ class UserLoginView(View):
             user = authenticate(email=cd['email'], password=cd['password'])
             if user is not None:
                 login(request, user)
+                if self.next:
+                    return redirect(self.next)
                 return redirect('home:home')
             else:
                 return redirect('accounts:user_login')
         return render(request, self.template_name, {'form': form})
 
 
-class UserLogoutView(View):
+class UserLogoutView(LoginRequiredMixin, View):
     def get(self, request):
         logout(request)
         return redirect('home:home')
