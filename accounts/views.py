@@ -97,7 +97,7 @@ class UserLoginView(View):
         form = self.form_class(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
-            user = authenticate(email=cd['email'], password=cd['password'])
+            user = authenticate(phone_number=cd['phone_number'], password=cd['password'])
             if user is not None:
                 login(request, user)
                 if self.next:
@@ -112,3 +112,10 @@ class UserLogoutView(LoginRequiredMixin, View):
     def get(self, request):
         logout(request)
         return redirect('home:home')
+
+
+class UserProfileView(LoginRequiredMixin, View):
+    def get(self, request):
+        user_id = request.user.id
+        user = get_object_or_404(User, id=user_id)
+        return render(request, 'accounts/profile.html', {'user': user})

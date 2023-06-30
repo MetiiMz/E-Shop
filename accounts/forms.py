@@ -100,11 +100,12 @@ class UserRegisterVerifyCodeForm(forms.Form):
 
 
 class UserLoginForm(forms.Form):
-    email = forms.EmailField(
+    phone_number = forms.CharField(
+        max_length=11,
         label=False,
-        widget=forms.EmailInput({
+        widget=forms.NumberInput({
             'class': 'form-control',
-            'placeholder': 'Email',
+            'placeholder': 'Phone Number',
         })
     )
     password = forms.CharField(

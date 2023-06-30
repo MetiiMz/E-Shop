@@ -15,7 +15,7 @@
                     <a class="nav-link dropdown-toggle " href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon-user"></span></a>
                     <div class="dropdown-menu" aria-labelledby="dropdown04">
                         {% if request.user.is_authenticated %}
-                        <a class="dropdown-item" href="#">Profile</a>
+                        <a class="dropdown-item" href="{% url 'accounts:user_profile' %}">Profile</a>
                         <a class="dropdown-item" href="{% url 'accounts:user_logout' %}">Logout</a>
                         {% else %}
                         <a class="dropdown-item" href="{% url 'accounts:user_register' %}">Register</a>

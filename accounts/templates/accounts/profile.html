@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="contact-section bg-light">
+    <div class="hero-wrap hero-bread" style="background-image: url({% static 'images/bg_7.jpg' %});">
+        <div class="container">
+            <div class="row block-9 no-gutters align-items-center justify-content-center">
+                <div class="col-md-9 ftco-animate text-center">
+                    <h1 class="mb-0 bread">Profile</h1><br><br>
+                    <div class="col-md-12 order-md-last d-flex">
+                        <form action="#" class="bg-white p-4 contact-form">
+                            <div class="form-group">
+                                <p><span>Full Name :  </span><strong>{{ user.full_name }}</strong></p>
+                                <hr>
+                            </div>
+                            <div class="form-group">
+                                <p><span>Email :  </span><strong>{{ user.email }}</strong></p>
+                                <hr>
+                            </div>
+                            <div class="form-group">
+                                <p><span>Phone Number :  </span><strong>{{ user.phone_number }}</strong></p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
