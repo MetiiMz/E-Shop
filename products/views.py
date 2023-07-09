@@ -20,3 +20,14 @@ class ProductsView(View):
             'categories': categories,
             'page_products': page_products
         })
+
+
+class ProductDetailView(View):
+    template_name = 'products/product_detail.html'
+
+    def get(self, request, slug):
+        categories = Category.objects.filter(is_sub=False)
+        product = get_object_or_404(Product, slug=slug)
+        return render(request, self.template_name, {'product': product, 'categories': categories})
+
+
