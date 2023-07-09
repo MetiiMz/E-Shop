@@ -1,11 +1,22 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views import View
-from .models import Product
+from .models import Category, Product
+from django.core.paginator import Paginator
 
 
-class ProductView(View):
+class ProductsView(View):
     template_name = 'products/products.html'
 
-    def get(self, request):
+    def get(self, request, category_slug=None):
         products = Product.objects.filter(available=True)
-        return render(request, self.template_name, {'products': products})
+        categories = Category.objects.filter(is_sub=False)
+        if category_slug:
+            category = get_object_or_404(Category, slug=category_slug)
+            products = products.filter(category=category)
+        p = Paginator(products, 6)
+        page = request.GET.get('page')
+        page_products = p.get_page(page)
+        return render(request, self.template_name, {
+            'categories': categories,
+            'page_products': page_products
+        })

@@ -7,7 +7,7 @@
         <div class="row">
             <div class="col-md-8 col-lg-10 order-md-last">
                 <div class="row">
-                    {% for product in products %}
+                    {% for product in page_products %}
                     <div class="col-sm-6 col-md-6 col-lg-4 ftco-animate">
                         <div class="product">
                             <a href="#" class="img-prod"><img class="img-fluid" src="{{ product.image.url }}" alt="Colorlib Template">
@@ -31,6 +31,35 @@
                             </div>
                         </div>
                     </div>
+                    {% endfor %}
+                </div>
+                <div class="row mt-5">
+                    <div class="col text-center">
+                        <div class="block-27">
+                            <ul>
+                                {% if page_products.has_previous %}
+                                <li><a href="?page={{ page_products.previous_page_number }}">&lt;</a></li>
+                                <li><a href="?page=1">1</a></li>
+                                {% endif %}
+                                <li class="active"><a href="?page={{ page_products.number }}">{{ page_products.number }}</a></li>
+                                {% if page_products.has_next %}
+                                <li><a href="?page={{ page_products.next_page_number }}">{{ page_products.next_page_number }}</a></li>
+                                <li><a href="?page={{ page_products.paginator.num_pages }}">&gt;</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-2 sidebar">
+                <div class="sidebar-box-2">
+                    {% for category in categories %}
+                    <h2 class="heading mb-4"><a href="{{ category.get_absolute_url }}">{{ category.name }}</a></h2>
+                    <ul>
+                        {% for sub in category.subcategory.all %}
+                        <li><a href="{{ sub.get_absolute_url }}">{{ sub.name }}</a></li>
+                        {% endfor %}
+                    </ul><br>
                     {% endfor %}
                 </div>
             </div>
