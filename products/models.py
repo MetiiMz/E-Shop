@@ -1,5 +1,7 @@
 from django.db import models
 from django.urls import reverse
+from django.db.models import Avg, Count
+from accounts.models import User
 
 
 class Category(models.Model):
@@ -53,3 +55,38 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return reverse('products:product_detail', args=[self.slug])
+
+    def rating(self):
+        vote = Rating.objects.filter(product=self).aggregate(average=Avg('rate'))
+        avg = 0
+        if vote['average'] is not None:
+            avg = float(vote['average'])
+        return avg
+
+    def rate_count(self):
+        vote = Rating.objects.filter(product=self).aggregate(count=Count('id'))
+        cnt = 0
+        if vote['count'] is not None:
+            cnt = int(vote['count'])
+        return cnt
+
+
+class Rating(models.Model):
+    user = models.ForeignKey(User, models.CASCADE, related_name='user_rate')
+    product = models.ForeignKey(Product, models.CASCADE, related_name='product_rete')
+    rate = models.IntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.user} - {self.rate} - {self.product.id}'
+
+
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_comment')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_comment')
+    reply = models.ForeignKey('self', on_delete=models.CASCADE, related_name='reply_comment', null=True, blank=True)
+    is_reply = models.BooleanField(default=False)
+    body = models.TextField(max_length=250)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.user} - {self.body[0:20]} - {self.product}'

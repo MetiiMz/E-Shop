@@ -12,18 +12,15 @@
                 <h3>{{ product.name }}</h3>
                 <div class="rating d-flex">
                     <p class="text-left mr-4">
-                        <a href="#" class="mr-2">5.0</a>
-                        <a href="#"><span class="ion-ios-star-outline"></span></a>
-                        <a href="#"><span class="ion-ios-star-outline"></span></a>
-                        <a href="#"><span class="ion-ios-star-outline"></span></a>
-                        <a href="#"><span class="ion-ios-star-outline"></span></a>
-                        <a href="#"><span class="ion-ios-star-outline"></span></a>
+                        <a href="#" class="mr-2">{{ product.rating|stringformat:".1f" }}</a>
+                        <a href="{% url 'products:product_rate' product.id 1 %}"><span class="{% if product.rating > 0.5 %} ion-ios-star {% elif product.rating > 0 %} ion-ios-star-half {% else %} ion-ios-star-outline {% endif %}"></span></a>
+                        <a href="{% url 'products:product_rate' product.id 2 %}"><span class="{% if product.rating > 1.5 %} ion-ios-star {% elif product.rating > 1 %} ion-ios-star-half {% else %} ion-ios-star-outline {% endif %}"></span></a>
+                        <a href="{% url 'products:product_rate' product.id 3 %}"><span class="{% if product.rating > 2.5 %} ion-ios-star {% elif product.rating > 2 %} ion-ios-star-half {% else %} ion-ios-star-outline {% endif %}"></span></a>
+                        <a href="{% url 'products:product_rate' product.id 4 %}"><span class="{% if product.rating > 3.5 %} ion-ios-star {% elif product.rating > 3 %} ion-ios-star-half {% else %} ion-ios-star-outline {% endif %}"></span></a>
+                        <a href="{% url 'products:product_rate' product.id 5 %}"><span class="{% if product.rating > 4.5 %} ion-ios-star {% elif product.rating > 4 %} ion-ios-star-half {% else %} ion-ios-star-outline {% endif %}"></span></a>
                     </p>
                     <p class="text-left mr-4">
-                        <a href="#" class="mr-2" style="color: #000;">100 <span style="color: #bbb;">Rating</span></a>
-                    </p>
-                    <p class="text-left">
-                        <a href="#" class="mr-2" style="color: #000;">500 <span style="color: #bbb;">Sold</span></a>
+                        <a href="#" class="mr-2" style="color: #000;">{{ product.rate_count }} <span style="color: #bbb;">Rating</span></a>
                     </p>
                 </div>
                 <p class="price"><span>${{ product.price }}</span></p>
@@ -78,18 +75,18 @@
             {% for related_product in category.product.all|slice:"0:3" %}
             <div class="col-sm col-md-6 col-lg ftco-animate">
                 <div class="product">
-                    <a href="{% url 'products:product_detail' related_product.slug %}" class="img-prod"><img class="img-fluid" src="{{ related_product.image.url }}" alt="Colorlib Template">
+                    <a href="{{ related_product.get_absolute_url }}" class="img-prod"><img class="img-fluid" src="{{ related_product.image.url }}" alt="Colorlib Template">
                         <div class="overlay"></div>
                     </a>
                     <div class="text py-3 px-3">
-                        <h3><a href="{% url 'products:product_detail' related_product.slug %}">{{ related_product.name|truncatewords:2 }}</a></h3>
+                        <h3><a href="{{ related_product.get_absolute_url }}">{{ related_product.name|truncatewords:2 }}</a></h3>
                         <div class="d-flex">
                             <div class="pricing">
                                 <p class="price"><span class="price-sale">${{ related_product.price }}</span></p>
                             </div>
                             <div class="rating">
                                 <p class="text-right">
-                                    <a href="#"><span class="ion-ios-star"></span></a>
+                                    <a href="#"><span class="ion-ios-star"></span>{{ related_product.rating }}</a>
                                 </p>
                             </div>
                         </div>
@@ -101,6 +98,70 @@
             </div>
             {% endfor %}
             {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="ftco-section ftco-degree-bg">
+    <div class="container">
+        <div class="col-md-6 order-md-last d-flex">
+            <form action="#" method="post" class="bg-white p-0 contact-form" novalidate>
+                <div class="form-group">
+                    {% csrf_token %}
+                    {{ form }}
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Send" class="btn btn-primary py-2 px-4">
+                </div>
+            </form>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-lg-8 ftco-animate">
+                <h3 class="mb-5">{{ comments.count }} Comments</h3>
+                {% for comment in comments %}
+                <ul class="comment-list">
+                    <li class="comment">
+                        <div class="comment-body">
+                            <h3>{{ comment.user.full_name }}</h3>
+                            <div class="meta">{{ comment.created }}</div>
+                            <p>{{ comment.body }}</p>
+                            <p>
+                                <a class="reply" data-bs-toggle="collapse" href="#{{ comment.id }}" role="button" aria-controls="collapseExample">Reply</a>
+                            </p>
+                            <div class="collapse" id="{{ comment.id }}">
+                                <div class="col-md-6 order-md-last d-flex">
+                                    <form action="{% url 'products:product_comment_reply' product.id comment.id %}" method="post" class="bg-white p-0 contact-form" novalidate>
+                                        <div class="form-group">
+                                            {% csrf_token %}
+                                            {{ form_reply }}
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="submit" value="Send" class="btn btn-primary py-2 px-4">
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% with replies=comment.reply_comment.all %}
+                        {% for reply in replies %}
+                        <ul class="children">
+                            <li class="comment">
+                                <div class="comment-body">
+                                    <h3>{{ reply.user.full_name }}</h3>
+                                    <div class="meta">{{ reply.created }}</div>
+                                    <p>{{ reply.body }}</p>
+                                </div>
+                            </li>
+                        </ul>
+                        {% endfor %}
+                        {% endwith %}
+                    </li>
+                </ul>
+                {% empty %}
+                <p>No Comments Yet</p>
+                {% endfor %}
+            </div>
         </div>
     </div>
 </section>

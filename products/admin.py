@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Size, Product
+from .models import Category, Size, Product, Rating, Comment
 
 
 @admin.register(Category)
@@ -18,3 +18,13 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'price', 'available')
     raw_id_fields = ('category', 'sizes')
     prepopulated_fields = {'slug': ('name',)}
+
+
+@admin.register(Rating)
+class RatingAdmin(admin.ModelAdmin):
+    list_display = ('user', 'rate', 'product')
+
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('user', 'body', 'product')
