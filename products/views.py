@@ -2,8 +2,11 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from .models import Category, Product, Rating, Comment
 from .forms import CommentForm, CommentReplyForm
+from orders.forms import CartAddForm
 from django.core.paginator import Paginator
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 
 class ProductsView(View):
@@ -29,6 +32,7 @@ class ProductsView(View):
 class ProductDetailView(View):
     form_class = CommentForm
     form_reply_class = CommentReplyForm
+    form_cart_add = CartAddForm
     template_name = 'products/product_detail.html'
 
     def setup(self, request, *args, **kwargs):
@@ -46,10 +50,12 @@ class ProductDetailView(View):
                 'categories': categories,
                 'comments': comments,
                 'form': self.form_class,
-                'form_reply': self.form_reply_class
+                'form_reply': self.form_reply_class,
+                'form_cart_add': self.form_cart_add
             }
         )
 
+    @method_decorator(login_required)
     def post(self, request, *args, **kwargs):
         # Create a comment
         form = self.form_class(request.POST)

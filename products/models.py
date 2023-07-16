@@ -51,7 +51,7 @@ class Product(models.Model):
         ordering = ('name',)
 
     def __str__(self):
-        return f'{self.name}'
+        return self.name
 
     def get_absolute_url(self):
         return reverse('products:product_detail', args=[self.slug])
