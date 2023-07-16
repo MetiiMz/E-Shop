@@ -20,7 +20,7 @@
                         <tbody>
                         {% for item in cart %}
                         <tr class="text-center">
-                            <td class="product-remove"><a href="#"><span class="ion-ios-close"></span></a></td>
+                            <td class="product-remove"><a href="{% url 'orders:cart_remove' item.product.id %}"><span class="ion-ios-close"></span></a></td>
 
                             <td class="product-name">
                                 <h3>{{ item.product }}</h3>
