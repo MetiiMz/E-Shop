@@ -10,16 +10,27 @@
                     <h1 class="mb-0 bread">Profile</h1><br><br>
                     <div class="col-md-12 order-md-last d-flex">
                         <form action="#" class="bg-white p-4 contact-form">
+                            <br>
                             <div class="form-group">
                                 <p><span>Full Name :  </span><strong>{{ user.full_name }}</strong></p>
-                                <hr>
                             </div>
+                            <hr>
                             <div class="form-group">
                                 <p><span>Email :  </span><strong>{{ user.email }}</strong></p>
-                                <hr>
                             </div>
+                            <hr>
                             <div class="form-group">
                                 <p><span>Phone Number :  </span><strong>{{ user.phone_number }}</strong></p>
+                            </div>
+                            <hr>
+                            <div class="form-group">
+                                {% for item in user_order %}
+                                <p class="mr-4">
+                                    <a href="{% url 'orders:order_delete' item.id %}" class="{% if item.paid %} disable {% else %} btn btn-danger ion-ios-close {% endif %}"></a>
+                                    <a href="{% if item.paid %} # {% else %} {% url 'orders:order_detail' item.id %} {% endif %}">{{ item.get_name_item }} </a><span>Paid : </span><span class="{% if item.paid %} icon-check {% else %} icon-check-minus {% endif %}"></span>
+                                </p>
+                                <hr>
+                                {% endfor %}
                             </div>
                         </form>
                     </div>

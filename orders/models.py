@@ -15,6 +15,10 @@ class Order(models.Model):
     def __str__(self):
         return f'{self.user} {str(self.id)}'
 
+    def get_name_item(self):
+        for item in self.items.all():
+            return item.product
+
     def get_total_price(self):
         return sum(item.get_cost() for item in self.items.all())
 

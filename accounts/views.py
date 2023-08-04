@@ -115,7 +115,10 @@ class UserLogoutView(LoginRequiredMixin, View):
 
 
 class UserProfileView(LoginRequiredMixin, View):
-    def get(self, request):
-        user_id = request.user.id
+    def get(self, request, user_id):
         user = get_object_or_404(User, id=user_id)
-        return render(request, 'accounts/profile.html', {'user': user})
+        if request.user == user:
+            user_order = user.orders.all()
+            return render(request, 'accounts/profile.html', {'user': user, 'user_order': user_order})
+        else:
+            return redirect('home:home')

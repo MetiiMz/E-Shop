@@ -20,22 +20,11 @@
                         <a href="{% url 'products:product_rate' product.id 5 %}"><span class="{% if product.rating > 4.5 %} ion-ios-star {% elif product.rating > 4 %} ion-ios-star-half {% else %} ion-ios-star-outline {% endif %}"></span></a>
                     </p>
                     <p class="text-left mr-4">
-                        <a href="#" class="mr-2" style="color: #000;">{{ product.rate_count }} <span style="color: #bbb;">Rating</span></a>
-                    </p>
+                    <p class="mr-2" style="color: #000;">{{ product.rate_count }} <span style="color: #bbb;">Rating</span></p>
                 </div>
                 <p class="price"><span>${{ product.price }}</span></p>
-                <p>{{ product.description }}</p>
+                <p>{{ product.description }}</p><br><br>
                 <form action="{% url 'orders:cart_add' product.id %}" method="post" class="col-md-4">
-                    <div class="form-group d-flex">
-                        <div class="select-wrap">
-                            <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-                            <select name="size" class="form-control">
-                                {% for size in product.sizes.all %}
-                                <option value="{{ size }}">{{ size }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
                     {% csrf_token %}
                     {{ form_cart_add }}
                     <br>

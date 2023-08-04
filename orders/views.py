@@ -34,7 +34,13 @@ class CartRemoveView(View):
 class OrderDetailView(LoginRequiredMixin, View):
     def get(self, request, order_id):
         order = get_object_or_404(Order, id=order_id)
-        return render(request, 'orders/order.html', {'order': order})
+        if request.user == order.user:
+            if order.paid is False:
+                return render(request, 'orders/order.html', {'order': order})
+            else:
+                return redirect('accounts:user_profile', request.user.id)
+        else:
+            return redirect('home:home')
 
 
 class OrderCreateView(LoginRequiredMixin, View):
@@ -54,3 +60,29 @@ class OrderCreateView(LoginRequiredMixin, View):
         else:
             return redirect('products:products')
 
+
+class OrderDeleteView(LoginRequiredMixin, View):
+    def get(self, request, order_id):
+        order = get_object_or_404(Order, id=order_id)
+        if request.user == order.user:
+            if order.paid is False:
+                order.delete()
+                return redirect('accounts:user_profile', request.user.id)
+            else:
+                return redirect('accounts:user_profile', request.user.id)
+        else:
+            return redirect('home:home')
+
+
+class OrderPayView(LoginRequiredMixin, View):
+    def get(self, request, order_id):
+        order = get_object_or_404(Order, id=order_id)
+        if request.user == order.user:
+            if order.paid is False:
+                order.paid = True
+                order.save()
+                return redirect('accounts:user_profile', request.user.id)
+            else:
+                return redirect('orders:order_detail', order.id)
+        else:
+            return redirect('home:home')
