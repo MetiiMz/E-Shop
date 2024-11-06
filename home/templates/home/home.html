@@ -117,7 +117,7 @@
     <div class="container">
         <div class="row">
             {% for product in products|slice:"0:4" %}
-            <div class="col-sm col-md-6 col-lg ftco-animate">
+            <div class="col-sm-6 col-md-6 col-lg-3 ftco-animate">
                 <div class="product">
                     <a href="{{ product.get_absolute_url }}" class="img-prod"><img class="img-fluid" src="{{ product.image.url }}" alt="Colorlib Template">
                         <div class="overlay"></div>
@@ -135,7 +135,7 @@
                             </div>
                         </div>
                         <p class="bottom-area d-flex px-3">
-                            <a href="#" class="add-to-cart text-center py-2 mr-1"><span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
+                            <a href="{{ product.get_absolute_url }}" class="add-to-cart text-center py-2 mr-1"><span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
                         </p>
                     </div>
                 </div>

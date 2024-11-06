@@ -14,7 +14,7 @@ class ProductsView(View):
 
     def get(self, request, category_slug=None):
         products = Product.objects.filter(available=True)
-        categories = Category.objects.filter(is_sub=False)
+        categories = Category.objects.filter(is_sub=True)
         if category_slug:
             # To filter the category
             category = get_object_or_404(Category, slug=category_slug)
